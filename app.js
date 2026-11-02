@@ -129,7 +129,7 @@
     document.title = e.label + ' · 8.04';
     return header(e.label) + `<p>${esc(e.blurb || '')}</p><p class="xq-progress-note">Original questions written for this site in the style of past 8.04 exams. Work closed-book with the <a href="#formulas">formula sheet</a>, then check each part.</p><ul class="xq-list">${e.pages.map(pid => {
       const p = D.pages[pid];
-      return `<li><a href="#${pageToken(pid)}">${esc(p.title)}</a> ${tags([...new Set(p.order.map(n => p.questions[n].concept))])}</li>`;
+      return `<li><a href="#${pageToken(pid)}">${esc(p.title)}</a> — ${tags([...new Set(p.order.map(n => p.questions[n].concept))])}</li>`;
     }).join('')}</ul>`;
   }
 

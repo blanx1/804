@@ -1,4 +1,5 @@
 """Inline SVG figures, computed from the actual physics. Each returns one line of HTML for markdown."""
+import html
 import math
 
 BLUE, RED, GREEN, ORANGE, GRAY = "#2F7FD8", "#d9534f", "#2e9e5b", "#d98a1f", "#888888"
@@ -6,7 +7,8 @@ BLUE, RED, GREEN, ORANGE, GRAY = "#2F7FD8", "#d9534f", "#2e9e5b", "#d98a1f", "#8
 
 class Plot:
     def __init__(self, xr, yr, w=560, h=280, caption="", alt=""):
-        self.xr, self.yr, self.w, self.h, self.caption, self.alt = xr, yr, w, h, caption, alt or caption
+        self.xr, self.yr, self.w, self.h = xr, yr, w, h
+        self.caption, self.alt = html.escape(caption), html.escape(alt or caption)
         self.items = []
 
     def X(self, x):
@@ -24,7 +26,18 @@ class Plot:
     def curve(self, f, a=None, b=None, n=300, **kw):
         a = self.xr[0] if a is None else a
         b = self.xr[1] if b is None else b
-        return self.line([(a + (b - a) * k / n, f(a + (b - a) * k / n)) for k in range(n + 1)], **kw)
+        run = []
+        for k in range(n + 1):  # draw only the parts inside the plot, so curves don't flatten at its edge
+            x = a + (b - a) * k / n
+            y = f(x)
+            if self.yr[0] <= y <= self.yr[1]:
+                run.append((x, y))
+            elif run:
+                self.line(run, **kw)
+                run = []
+        if run:
+            self.line(run, **kw)
+        return self
 
     def hline(self, y, a=None, b=None, color=GRAY, dash="5 4", width=1):
         a = self.xr[0] if a is None else a
@@ -184,7 +197,7 @@ def mach_zehnder(bomb=False):
         '<rect x="378" y="228" width="46" height="8" transform="rotate(45 401 232)" fill="#2F7FD8"/>',
         '<rect x="378" y="88" width="46" height="6" transform="rotate(45 401 91)" fill="#888"/>',
         '<rect x="118" y="228" width="46" height="6" transform="rotate(45 141 231)" fill="#888"/>',
-        '<path d="M20 92H500M141 92V232H500M401 92V300" fill="none" stroke="#d98a1f" stroke-width="2"/>',
+        '<path d="M20 92H401M141 92V232H500M401 92V300" fill="none" stroke="#d98a1f" stroke-width="2"/>',
         '<text x="115" y="70" fill="currentColor" font-size="14">BS1</text>',
         '<text x="408" y="258" fill="currentColor" font-size="14">BS2</text>',
         '<text x="392" y="72" fill="currentColor" font-size="14">M1</text>',
@@ -196,7 +209,7 @@ def mach_zehnder(bomb=False):
         '<text x="250" y="224" fill="currentColor" font-size="13">lower branch</text>',
     ]
     if bomb:
-        i.append('<circle cx="270" cy="232" r="13" fill="#d9534f"/><text x="250" y="262" fill="currentColor" font-size="13">bomb</text>')
+        i.append('<circle cx="345" cy="232" r="13" fill="#d9534f"/><text x="328" y="262" fill="currentColor" font-size="13">bomb</text>')
     cap = ("Elitzur–Vaidman test: a live bomb in the lower branch acts as a which-path detector." if bomb
            else "Mach–Zehnder interferometer. Two beam splitters, two mirrors, two detectors.")
     return (f'<figure class="xq-svg"><svg viewBox="0 0 560 330" role="img" aria-label="{cap}" style="width:100%;max-width:560px;height:auto;font-family:inherit">'
@@ -221,7 +234,7 @@ def hydrogen_radial():
     p.curve(lambda r: (r * r / 2) * (1 - r / 2) ** 2 * math.exp(-r), 0, 20, color=GREEN)
     p.curve(lambda r: (r**4 / 24) * math.exp(-r), 0, 20, color=ORANGE)
     p.text(1.2, 0.56, "1s", color=BLUE)
-    p.text(6.0, 0.16, "2s", color=GREEN)
+    p.text(7.8, 0.14, "2s", color=GREEN)
     p.text(3.0, 0.22, "2p", color=ORANGE)
     return p.html()
 
@@ -231,7 +244,7 @@ def veff():
     p.axes("r / a₀", "Vₑff")
     for l, c in ((0, BLUE), (1, GREEN), (2, ORANGE)):
         p.curve(lambda r, l=l: l * (l + 1) / (r * r) - 2 / r, 0.3, 20, color=c)
-        p.text(20, l * (l + 1) / 361 - 2 / 19 + 0.03, f"ℓ={l}", color=c, anchor="end")
+        p.text(16, 0.38 - 0.08 * l, f"ℓ={l}", color=c)
     return p.html()
 
 
