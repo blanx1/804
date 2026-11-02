@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>8.04 Exam Practice</title>
+<link href="data:image/gif;base64,R0lGODlhEAAQAKECAAAAAAAzZv///////yH5BAEKAAMALAAAAAAQABAAAAIpnI+pi+DjAHztSAkVnri/fRmb9WUmg6ZoxLUsmIVyKbdijIPfHqq+WgAAOw==" rel="icon" type="image/gif"/>
+<!-- include catsoop base css -->
+<link href="cs/base.css" rel="stylesheet" type="text/css"/>
+<!-- set up JS namespace for catsoop -->
+<script type="text/javascript">
+    // @license magnet:?xt=urn:btih:0b31508aeb0634b347b8270c7bee4d411b5d4109&dn=agpl-3.0.txt AGPL-v3
+    var catsoop = {plugins: {}};
+
+    function toggleResponsiveHeader(){
+        document.getElementsByTagName('header')[0].classList.toggle('responsive');
+    }
+
+    function toggleAttribute(elt, attr){
+        elt.setAttribute(attr, elt.getAttribute(attr) === "true" ? "false" : "true");
+    }
+
+    catsoop.topMenuFocus = function(event) {
+        var elt = event.target;
+        var target = event.relatedTarget;
+        if (elt.classList.contains('menu-submenu')){
+            var topmenu = elt.parentNode.parentNode;
+            if (target && !target.classList.contains("menu-submenu") && target !== topmenu.children[1]) {
+                clearMenu(topmenu);
+            }
+        }else if (!target.classList.contains('cs_top_menu_item')){
+            clearMenu(elt.parentNode);
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', function(){
+        var menu_boxes = document.getElementsByClassName('dropdown-checkbox');
+        for(var i=0; i<menu_boxes.length; i++){
+            menu_boxes[i].checked = false;
+        }
+    });
+
+    function clearMenu(menu){
+       menu.children[1].checked = false;
+    }
+    // @license-end
+    </script>
+<!-- dark mode -->
+<script src="cs/darkreader.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    // @license magnet:?xt=urn:btih:0b31508aeb0634b347b8270c7bee4d411b5d4109&dn=agpl-3.0.txt AGPL-v3
+    catsoop.dark_mode_settings = null;
+    if (catsoop.dark_mode_settings === null){
+        catsoop.dark_mode_settings = JSON.parse(localStorage.getItem('catsoop_dark_mode_settings'));
+        if (catsoop.dark_mode_settings === null){
+            catsoop.dark_mode_settings = {'mode': 'enabled', 'brightness': 100, 'contrast': 90, 'sepia': 10, 'grayscale': 0};
+        }
+    }
+    localStorage.setItem('catsoop_dark_mode_settings', JSON.stringify(catsoop.dark_mode_settings));
+    catsoop.dark_mode = catsoop.dark_mode_settings.mode;
+    delete catsoop.dark_mode_settings.mode;
+    if (catsoop.dark_mode === 'enabled' || catsoop.dark_mode === 'auto'){
+        DarkReader[catsoop.dark_mode == 'enabled' ? 'enable' : 'auto'](catsoop.dark_mode_settings);
+    }
+    
+    document.addEventListener("DOMContentLoaded", function(event) {
+        if (DarkReader.isEnabled()) {
+            var invertfilter = 'invert(100%) hue-rotate(180deg)' +
+                               ' brightness(' + catsoop.dark_mode_settings.brightness + '%)' +
+                               ' contrast(' + catsoop.dark_mode_settings.contrast + '%)' +
+                               ' grayscale(' + catsoop.dark_mode_settings.grayscale + '%)' +
+                               ' sepia(' + catsoop.dark_mode_settings.sepia + '%)'
+            var inverter = document.createElement('style');
+            inverter.innerText = 'img.catsoop-darkmode-invert, video.catsoop-darkmode-invert {filter: ' + invertfilter + ';}\n\n'
+            document.head.appendChild(inverter);
+        }
+    });
+    // @license-end
+    </script>
+<!-- load in mathjax and CAT-SOOP-specific math rendering  -->
+<script type="text/javascript">
+    // @license magnet:?xt=urn:btih:0b31508aeb0634b347b8270c7bee4d411b5d4109&dn=agpl-3.0.txt AGPL-v3
+    MathJax = {
+      startup: {
+        typeset: false,
+      }
+    }
+
+    catsoop.render_math = function (elt) {
+        if(elt.classList.contains('cs_displaymath')){
+            var b = "\\[";
+            var e = "\\]";
+        }else{
+            var b = "\\(";
+            var e = "\\)";
+        }
+        elt.innerText = b + elt.innerText + e;
+        MathJax.typeset([elt]);
+        elt.classList.remove('cs_math_to_render');
+    }
+
+
+    catsoop.render_all_math = function (elt){
+        if (elt === null) {
+            return;
+        }
+        var mathelts = elt.getElementsByClassName('cs_math_to_render');
+        while(mathelts.length > 0){
+            catsoop.render_math(mathelts[0]);
+        }
+    }
+    document.addEventListener("DOMContentLoaded", function(event) {
+          catsoop.render_all_math(document);
+    });
+    // @license-end
+    </script>
+<script async="" id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml-full.js"></script>
+<!-- load in diagram stuff -->
+<!-- Syntax Highlighting -->
+<style>
+      :root {
+        --cs-base-bg-color: #2F7FD8;
+        --cs-light-bg-color: #A8CCFF;
+        --cs-base-font-color: #ffffff;
+        --cs-light-font-color: #000000;
+    }
+    </style>
+<link href="cs/course-theme.css" rel="stylesheet"/>
+<link href="cs/practice.css" rel="stylesheet"/>
+<style>.xq-svg{margin:1em auto;text-align:center}.xq-svg figcaption{font-size:.85em;margin-top:6px;opacity:.8}.xq-formulas{overflow-x:auto}.xq-formulas .cs_displaymath,.xq-lesson .cs_displaymath,#xq-problem .cs_displaymath{overflow-x:auto;overflow-y:hidden}</style>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+</head>
+<body style="margin: 0px;">
+<header id="cs_header">
+<div aria-role="menubar" class="nav-container">
+<div class="cs_header_text"><a href="#">8.04</a></div>
+<a class="cs_top_menu_item menu-toplevel" href="#learn" role="menuitem">Learn</a>
+<a class="cs_top_menu_item menu-toplevel" href="#practice" role="menuitem">Practice</a>
+<a class="cs_top_menu_item menu-toplevel" href="#progress" role="menuitem">Progress</a>
+<a class="cs_top_menu_item menu-toplevel" href="#formulas" role="menuitem">Formulas</a>
+<!--MENUS-->
+<a class="icon" href="javascript:void(0);" onclick="toggleResponsiveHeader()">☰</a>
+</div>
+</header>
+<nav aria-label="Breadcrumbs" class="cs_navigation cs_top_navigation" id="cs_breadcrumbs"></nav>
+<div class="cs_body" id="cs_body">
+<div class="cs_left_menu"></div>
+<div class="cs_content">
+<div class="cs_page_body" id="app" role="main"><p role="status">Loading the course…</p></div>
+</div>
+<div class="cs_right_menu"></div>
+</div>
+<footer>
+<nav aria-label="Breadcrumbs" class="cs_navigation cs_bottom_navigation" id="cs_bottom_navigation"></nav>
+<div class="cs_footer"><p id="xq-sync" style="font-size:85%">Progress is saved in this browser. Answers accept numbers with units (13.6 eV, 2 nm, 1.3 fm) and expressions (hbar^2/2m, sqrt(2/a), exp(-i omega t)). Write ħ as hbar and use i for √−1. As in physics notation, a/2b means a/(2b). Questions are original, written for study; they are not official 8.04 materials.</p>
+<pre class="catsooplogo" style="font-size:50%;">\            
+/    /\__/\  
+\__=(  o_O )=
+(__________) 
+ |_ |_ |_ |_ </pre>
+      Powered by <a href="https://catsoop.org" target="_blank">CAT-SOOP</a> v0.0.0 "Korat".<br/>
+      CAT-SOOP is <a href="https://www.fsf.org/about/what-is-free-software" target="_blank">Free/Libre Software</a>, available under the terms<br/>of the <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank">GNU Affero General Public License, version 3</a>.<br/>
+<a href="#source" id="xq-source" target="_blank">Source Code</a>
+</div>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script><script src="content.js"></script><script src="checks.js"></script><script src="app.js"></script></body>
+</html>
